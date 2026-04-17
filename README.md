@@ -1,6 +1,6 @@
 # HoloTerm
 
-<img width="733" height="330" alt="ChatGPT Image Apr 17, 2026, 01_17_24 AM" src="https://github.com/user-attachments/assets/ec283366-8900-4b7e-9860-96a2e2c44d0c" />
+<img width="350" height="330" alt="ChatGPT Image Apr 17, 2026, 01_17_24 AM" src="https://github.com/user-attachments/assets/ec283366-8900-4b7e-9860-96a2e2c44d0c" />
 
 **Your desktop, your terminal, one window.**
 
