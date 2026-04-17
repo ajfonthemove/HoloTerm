@@ -1,4 +1,4 @@
-<img width="350" height="330" alt="ChatGPT Image Apr 17, 2026, 01_17_24 AM" src="https://github.com/user-attachments/assets/ec283366-8900-4b7e-9860-96a2e2c44d0c" />
+<img width="250" height="230" alt="ChatGPT Image Apr 17, 2026, 01_17_24 AM" src="https://github.com/user-attachments/assets/ec283366-8900-4b7e-9860-96a2e2c44d0c" />
 <h1> HoloTerm </h1>
 
 **Your desktop, your terminal, one window.**
