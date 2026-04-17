@@ -1,5 +1,7 @@
 # HoloTerm
 
+<img width="733" height="330" alt="ChatGPT Image Apr 17, 2026, 01_17_24 AM" src="https://github.com/user-attachments/assets/ec283366-8900-4b7e-9860-96a2e2c44d0c" />
+
 **Your desktop, your terminal, one window.**
 
 Most terminal apps make you choose: either you stare at an opaque black rectangle that hides everything behind it, or you tile a dozen windows across your screen trying to keep context. HoloTerm doesn't ask you to choose.
