@@ -55,6 +55,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             .sink { [weak self] _ in self?.applyTheme() }
             .store(in: &cancellables)
 
+        appState.objectWillChange
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in self?.applyTheme() }
+            .store(in: &cancellables)
+
         // Keyboard shortcuts (cmd-T / cmd-W / cmd-1..9 / cmd-shift-[/]).
         installKeyMonitor()
     }
@@ -74,11 +79,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private func makeTerminal() -> LocalProcessTerminalView {
         let term = LocalProcessTerminalView(frame: .zero)
         term.processDelegate = self
-        // Critical: keep cell-back AND CALayer transparent so the
-        // GradientBackdrop layers show through.
-        term.nativeBackgroundColor = .clear
         term.wantsLayer = true
         term.layer?.backgroundColor = NSColor.clear.cgColor
+        // Use the theme's ANSI black at 30% alpha so the glass backdrop
+        // still shows through (70% transparent) while giving SwiftTerm a
+        // real dark colour for reverse-video (SGR 7) computation.
+        // A fully-clear bg makes inverseColor() produce alpha-0 = invisible.
+        let theme = appState.theme
+        term.nativeBackgroundColor = NSColor(hex: theme.ansi[0], alpha: 0.30)
         // Hide SwiftTerm's legacy scrollbar.
         for sub in term.subviews where sub is NSScroller {
             sub.isHidden = true
@@ -109,6 +117,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let theme = appState.theme
         term.installColors(theme.ansiPalette)
         term.nativeForegroundColor = glass.effectiveTextColor(for: theme)
+        // Update background to current theme's ANSI black with transparency
+        // for reverse-video support. Re-clear the CALayer since SwiftTerm's
+        // nativeBackgroundColor setter doesn't propagate to the layer.
+        term.nativeBackgroundColor = NSColor(hex: theme.ansi[0], alpha: 0.30)
+        term.layer?.backgroundColor = NSColor.clear.cgColor
         // Font — SwiftTerm recalculates cell dimensions automatically.
         if let font = NSFont(name: glass.fontName, size: CGFloat(glass.fontSize)) {
             if term.font.fontName != font.fontName || term.font.pointSize != font.pointSize {

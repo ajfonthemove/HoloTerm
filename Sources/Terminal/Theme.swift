@@ -65,6 +65,15 @@ struct Theme: Identifiable, Equatable, Hashable {
         ansi.map { swiftTermColor($0) }
     }
 
+    /// A vivid, high-saturation neon version of the accent colour — used for
+    /// the tab activity highlight so it contrasts against the dark terminal.
+    var neonAccentColor: Color {
+        let ns = NSColor(hex: accent)
+        var h: CGFloat = 0, s: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
+        (ns.usingColorSpace(.sRGB) ?? ns).getHue(&h, saturation: &s, brightness: &b, alpha: &a)
+        return Color(NSColor(hue: h, saturation: max(s, 0.85), brightness: 1.0, alpha: 1.0))
+    }
+
     static let bundled: [Theme] = [
         Theme(id: "dracula", name: "Dracula", accent: "#bd93f9", foreground: "#f8f8f2",
               ansi: ["#21222c","#ff5555","#50fa7b","#f1fa8c","#bd93f9","#ff79c6","#8be9fd","#f8f8f2",

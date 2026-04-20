@@ -50,6 +50,8 @@ struct HeaderView: View {
     @State private var renameText = ""
 
     var body: some View {
+        let headerTextColor = glass.effectiveTextSwiftUIColor(for: appState.theme)
+
         HStack(spacing: 4) {
             // Reserve space for traffic lights.
             Spacer().frame(width: 70)
@@ -64,7 +66,7 @@ struct HeaderView: View {
                         Image(systemName: "plus")
                             .frame(width: 22, height: 22)
                     }
-                    .buttonStyle(HeaderButtonStyle())
+                    .buttonStyle(HeaderButtonStyle(textColor: headerTextColor))
                 }
                 .padding(.horizontal, 4)
             }
@@ -76,7 +78,7 @@ struct HeaderView: View {
                 Image(systemName: "slider.horizontal.3")
                     .frame(width: 22, height: 22)
             }
-            .buttonStyle(HeaderButtonStyle(active: glass.enabled))
+            .buttonStyle(HeaderButtonStyle(active: glass.enabled, textColor: headerTextColor))
             .popover(isPresented: $showSettings, arrowEdge: .bottom) {
                 SettingsView(glass: glass, theme: appState.theme)
                     .frame(width: 280)
@@ -106,13 +108,9 @@ struct HeaderView: View {
     private func tabButton(_ tab: TabsModel.Tab) -> some View {
         let active = tabs.activeId == tab.id
         let hasActivity = tabs.activityTabs.contains(tab.id)
+        let neonActive = hasActivity && !active
 
         HStack(spacing: 4) {
-            if hasActivity && !active {
-                Circle()
-                    .fill(Color(hex: appState.theme.accent))
-                    .frame(width: 6, height: 6)
-            }
             if renamingId == tab.id {
                 TextField("", text: $renameText, onCommit: {
                     tabs.rename(tab.id, to: renameText)
@@ -123,7 +121,7 @@ struct HeaderView: View {
                 .frame(width: 110)
             } else {
                 Text(tab.name)
-                    .font(.system(size: 12))
+                    .font(.system(size: 12, weight: neonActive ? .semibold : .regular))
                     .lineLimit(1)
             }
             if tabs.tabs.count > 1 {
@@ -138,9 +136,14 @@ struct HeaderView: View {
         }
         .padding(.horizontal, 10)
         .frame(height: 26)
+        .foregroundColor(neonActive ? Color.black.opacity(0.85) : nil)
         .background(
             RoundedRectangle(cornerRadius: 6)
-                .fill(active ? Color.white.opacity(0.10) : Color.clear)
+                .fill(
+                    neonActive
+                        ? appState.theme.neonAccentColor
+                        : (active ? Color.white.opacity(0.10) : Color.clear)
+                )
         )
         .contentShape(Rectangle())
         .onTapGesture(count: 2) {
@@ -155,10 +158,11 @@ struct HeaderView: View {
 
 struct HeaderButtonStyle: ButtonStyle {
     var active: Bool = false
+    var textColor: Color = .white
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.system(size: 12))
-            .foregroundColor(.white.opacity(active ? 1 : 0.75))
+            .foregroundColor(textColor.opacity(active ? 1 : 0.75))
             .background(
                 RoundedRectangle(cornerRadius: 6)
                     .fill(
